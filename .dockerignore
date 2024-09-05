@@ -1,4 +1,5 @@
 .venv
-main.py
 __pycache__/
 .asr
+models/
+asr/

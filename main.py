@@ -66,7 +66,7 @@ def process_audiofile(fname, whisper_model, original_file=None, language='auto',
         print(f"Определен язык: {language} Точность: {info.language_probability}")
     else:
         # Транскрибирование с указанным языком
-        segments, info = model.transcribe(fname, beam_size=5, language=language)
+        segments, info = model.transcribe(fname, beam_size=5, language=language, vad_filter=True)
 
     whisper_model_name=whisper_model.split("/")[1]
     # Создаем файл с таймкодами
@@ -80,22 +80,22 @@ def process_audiofile(fname, whisper_model, original_file=None, language='auto',
             text = segment.text.strip()
             f.write(f'{timecode} {text}\n')
 
- #   # Создаем файл с "сырым" текстом
- #   rawtext = ' '.join([segment.text.strip() for segment in segments])
- #   rawtext = re.sub(" +", " ", rawtext)
+#    # Создаем файл с "сырым" текстом
+#    rawtext = ' '.join([segment.text.strip() for segment in segments])
+#    rawtext = re.sub(" +", " ", rawtext)
 #
 #    with open(fname_noext + '.txt', 'w', encoding='UTF-8') as f:
 #        f.write(rawtext)
 
-    # Создаем SRT файл, если есть исходный файл
-    if original_file:
-        srt_file = fname_noext + '.srt'
-        with open(srt_file, 'w', encoding='UTF-8') as f:
-            for idx, segment in enumerate(segments):
-                start_time = format_time(segment.start)
-                end_time = format_time(segment.end)
-                text = segment.text.strip()
-                f.write(f"{idx + 1}\n{start_time} --> {end_time}\n{text}\n\n")
+#    # Создаем SRT файл, если есть исходный файл
+#    if original_file:
+#        srt_file = fname_noext + '.srt'
+#        with open(srt_file, 'w', encoding='UTF-8') as f:
+#            for idx, segment in enumerate(segments):
+#                start_time = format_time(segment.start)
+#                end_time = format_time(segment.end)
+#                text = segment.text.strip()
+#                f.write(f"{idx + 1}\n{start_time} --> {end_time}\n{text}\n\n")
 
 def format_time(seconds):
     hh = int(seconds) // 3600
